@@ -1,0 +1,35 @@
+import org.kohsuke.args4j.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class du {
+	@Option(name = "-h", usage = "Size of file in human variable")
+	private boolean human;
+
+	@Option(name = "-c", usage = "Sum of all files")
+	private boolean sumOfFilesFlag;
+
+	@Option(name = "--si", usage = "Size of file in SI")
+	private boolean siSize;
+
+	@Argument(required = true, metaVar = "fileName", usage = "File name")
+	private List<String> inputFileName = new ArrayList<>();
+
+	public static void main(String[] args) throws IOException { new du().launch(args); }
+
+	private void launch(String[] args) throws IOException {
+		CmdLineParser parser = new CmdLineParser(this);
+		try {
+			parser.parseArgument(args);
+		} catch (CmdLineException e) {
+			System.err.println(e.getMessage());
+			System.err.println("java -jar diskUsage.jar [-h] [-c] [--si] fileName1 fileName2 filename3...");
+			parser.printUsage(System.err);
+			System.exit(1);
+		}
+
+		duL cmdFiles = new duL(human, sumOfFilesFlag, siSize, inputFileName);
+		System.out.println(cmdFiles.util());
+	}
+}
