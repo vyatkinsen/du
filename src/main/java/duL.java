@@ -29,7 +29,7 @@ public class duL {
 				String s = dir[dir.length - 1];
 				double fileSize = Files.size(Path.of(x));
 				if (sumOfFilesFlag) sumOfFilesSize += fileSize;
-				else result.append("Размер файла ").append(s).append(" равен ").append(sizeDeterminant(Files.size(Path.of(x)))).append("\n");
+				else result.append("\n").append("Размер файла ").append(s).append(" равен ").append(sizeDeterminant(Files.size(Path.of(x))));
 			}
 		} catch (NoSuchFileException e){
 			e.printStackTrace();
