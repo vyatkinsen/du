@@ -37,7 +37,7 @@ public class duL {
 			System.exit(1);
 		}
 		if (sumOfFilesFlag) return "Сумма всех файлов равна " + sizeDeterminant(sumOfFilesSize);
-		return result.toString();
+		return result.append("\n").toString();
 	}
 
 	@NotNull
