@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>du</artifactId>
+    <artifactId>DuLauncher</artifactId>
     <version>1</version>
     <build>
         <plugins>
@@ -23,7 +23,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>du</mainClass>
+                            <mainClass>DuLauncher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
