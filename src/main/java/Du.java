@@ -3,8 +3,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class Du {
 	private final boolean human;
@@ -22,46 +21,41 @@ public class Du {
 	}
 
 	static class personalFilevisitor extends SimpleFileVisitor<Path>{
-		public static long sumOfFiles;
+		private long sumOfFiles;
 
 		@Override
 		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException{
 			sumOfFiles += Files.size(file);
 			return FileVisitResult.CONTINUE;
 		}
+		public long getSum(){ return sumOfFiles; }
+	}
 
-		public static long getSum(){
-			long x = sumOfFiles;
-			sumOfFiles = 0;
-			return x;
-		}
+	private String collector(HashMap<String, String> resultFileWithSize){
+		StringBuilder res = new StringBuilder();
+		resultFileWithSize.forEach((name, size) -> res.append("\n").append("Размер ").append(name).append(" равен ").append(size));
+		return res.append("\n").toString();
 	}
 
 	public String util() throws IOException {
-		StringBuilder result = new StringBuilder();
-			for (String x : fileName){
-				long fileSize;
-				Path path = Paths.get(x);
-
-				if (!Files.exists(path)) {
-					System.err.println("Вы ввели имя несуществующего файла");
-					System.exit(1);
-				}
-
-				if (Files.isDirectory(path)) {
-					Files.walkFileTree(path, new personalFilevisitor());
-					fileSize = personalFilevisitor.getSum();
-				} else fileSize = Files.size(Path.of(x));
-
-				if (sumOfFilesFlag) sumOfFilesSize += fileSize;
-				else {
-					String resultFileSize = sizeDeterminant(fileSize);
-					result.append("\n").append("Размер ").append(x).append(" равен ").append(resultFileSize);
-				}
+		LinkedHashMap<String, String> resultFileWithSize = new LinkedHashMap<>();
+		for (String x : fileName){
+			long fileSize;
+			Path path = Paths.get(x);
+			if (!Files.exists(path)) {
+				System.err.println("Вы ввели имя несуществующего файла");
+				System.exit(1);
 			}
-
+			if (Files.isDirectory(path)) {
+				personalFilevisitor fv = new personalFilevisitor();
+				Files.walkFileTree(path, fv);
+				fileSize = fv.getSum();
+			} else fileSize = Files.size(Path.of(x));
+			if (sumOfFilesFlag) sumOfFilesSize += fileSize;
+			else resultFileWithSize.put(x, sizeDeterminant(fileSize));
+		}
 		if (sumOfFilesFlag) return "Сумма всех файлов равна " + sizeDeterminant(sumOfFilesSize);
-		return result.append("\n").toString();
+		return collector(resultFileWithSize);
 	}
 
 	@NotNull

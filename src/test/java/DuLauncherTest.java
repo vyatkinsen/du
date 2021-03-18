@@ -43,11 +43,11 @@ class DuLauncherTest {
 	void humanReadableSiWithFilesTest() throws IOException {
 		assertEquals("""
        
-       Размер files/ИсторияРоссии.rtf равен 804.981 KB
-       Размер files/kitten.jpg равен 46.962 KB
-       Размер files/Козодой.jpg равен 92.007 KB
-       Размер files/car.jpeg равен 3.971 MB
-       """, new Du(true, false, true, Arrays.asList(fileNames)).util());
+		Размер files/ИсторияРоссии.rtf равен 804.981 KB
+		Размер files/kitten.jpg равен 46.962 KB
+		Размер files/Козодой.jpg равен 92.007 KB
+		Размер files/car.jpeg равен 3.971 MB
+       	""", new Du(true, false, true, Arrays.asList(fileNames)).util());
 	}
 
 	@Test
