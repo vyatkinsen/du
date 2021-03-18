@@ -18,7 +18,7 @@ public class Du {
 		this.fileName = fileName;
 	}
 
-	static class personalFilevisitor extends SimpleFileVisitor<Path>{
+	static class PersonalFilevisitor extends SimpleFileVisitor<Path>{
 		private long sumOfFiles;
 
 		@Override
@@ -35,36 +35,11 @@ public class Du {
 		return res.append("\n").toString();
 	}
 
-	public String util() throws IOException {
-		Map<String, Long> FileWithSize = new LinkedHashMap<>();
-		Map<String, String> resultFileWithSize = new LinkedHashMap<>();
-		for (String x : fileName) {
-			long fileSize;
-			Path path = Paths.get(x);
-			if (!Files.exists(path)) {
-				System.err.println("Вы ввели имя несуществующего файла");
-				System.exit(1);
-			}
-			if (Files.isDirectory(path)) {
-				personalFilevisitor fv = new personalFilevisitor();
-				Files.walkFileTree(path, fv);
-				fileSize = fv.getSum();
-			} else fileSize = Files.size(Path.of(x));
-			FileWithSize.put(x, fileSize);
-		}
-		FileWithSize.forEach((path, size) -> {
-			if (sumOfFilesFlag) sumOfFilesSize += size;
-			else resultFileWithSize.put(path, sizeDeterminant(size));
-		});
-		if (sumOfFilesFlag) return "Сумма всех файлов равна " + sizeDeterminant(sumOfFilesSize);
-		return collector(resultFileWithSize);
-	}
-
 	@NotNull
 	private String sizeDeterminant(long num){
-		int GB = (int) (Math.pow(2, 30) - 1);
-		int MB = (int) (Math.pow(2, 20) - 1);
-		int KB = (int) (Math.pow(2, 10) - 1);
+		int gb = (int) (Math.pow(2, 30) - 1);
+		int mb = (int) (Math.pow(2, 20) - 1);
+		int kb = (int) (Math.pow(2, 10) - 1);
 		int mn = 0;
 
 		if (!siSize) mn = 7;
@@ -72,13 +47,13 @@ public class Du {
 		String unit = "KB";
 
 		if (human){
-			if (num > GB) {
+			if (num > gb) {
 				unit = "GB";
 				scale = 9 + mn * 3;
-			} else if (num > MB) {
+			} else if (num > mb) {
 				unit = "MB";
 				scale = 6 + mn * 2;
-			} else if (num > KB) {
+			} else if (num > kb) {
 				unit = "KB";
 			} else {
 				unit = "B";
@@ -87,5 +62,35 @@ public class Du {
 		}
 		if (siSize) return String.format(Locale.ROOT, "%.3f", num * Math.pow(10, -scale)) + " " + unit;
 		else return String.format(Locale.ROOT, "%.3f", num * Math.pow(2, -scale)) + " " + unit;
+	}
+
+	private String distributor(Map<String, Long> fileWithSize){
+		Map<String, String> resultFileWithSize = new LinkedHashMap<>();
+		fileWithSize.forEach((path, size) -> {
+			if (sumOfFilesFlag) sumOfFilesSize += size;
+			else resultFileWithSize.put(path, sizeDeterminant(size));
+		});
+		if (sumOfFilesFlag) return "Сумма всех файлов равна " + sizeDeterminant(sumOfFilesSize);
+		return collector(resultFileWithSize);
+	}
+
+	public String util() throws IOException {
+		Map<String, Long> fileWithSize = new LinkedHashMap<>();
+
+		for (String x : fileName) {
+			long fileSize;
+			Path path = Paths.get(x);
+			if (!Files.exists(path)) {
+				System.err.println("Вы ввели имя несуществующего файла");
+				System.exit(1);
+			}
+			if (Files.isDirectory(path)) {
+				PersonalFilevisitor fv = new PersonalFilevisitor();
+				Files.walkFileTree(path, fv);
+				fileSize = fv.getSum();
+			} else fileSize = Files.size(Path.of(x));
+			fileWithSize.put(x, fileSize);
+		}
+		return distributor(fileWithSize);
 	}
 }
