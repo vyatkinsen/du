@@ -11,7 +11,6 @@ public class Du {
 	private final List<String> fileName;
 	private long sumOfFilesSize;
 
-
 	public Du(boolean human, boolean sumOfFilesFlag, boolean siSize, List<String> fileName) {
 		this.sumOfFilesFlag = sumOfFilesFlag;
 		this.siSize = siSize;
@@ -30,15 +29,16 @@ public class Du {
 		public long getSum(){ return sumOfFiles; }
 	}
 
-	private String collector(HashMap<String, String> resultFileWithSize){
+	private String collector(Map<String, String> resultFileWithSize){
 		StringBuilder res = new StringBuilder();
 		resultFileWithSize.forEach((name, size) -> res.append("\n").append("Размер ").append(name).append(" равен ").append(size));
 		return res.append("\n").toString();
 	}
 
 	public String util() throws IOException {
-		LinkedHashMap<String, String> resultFileWithSize = new LinkedHashMap<>();
-		for (String x : fileName){
+		Map<String, Long> FileWithSize = new LinkedHashMap<>();
+		Map<String, String> resultFileWithSize = new LinkedHashMap<>();
+		for (String x : fileName) {
 			long fileSize;
 			Path path = Paths.get(x);
 			if (!Files.exists(path)) {
@@ -50,9 +50,12 @@ public class Du {
 				Files.walkFileTree(path, fv);
 				fileSize = fv.getSum();
 			} else fileSize = Files.size(Path.of(x));
-			if (sumOfFilesFlag) sumOfFilesSize += fileSize;
-			else resultFileWithSize.put(x, sizeDeterminant(fileSize));
+			FileWithSize.put(x, fileSize);
 		}
+		FileWithSize.forEach((path, size) -> {
+			if (sumOfFilesFlag) sumOfFilesSize += size;
+			else resultFileWithSize.put(path, sizeDeterminant(size));
+		});
 		if (sumOfFilesFlag) return "Сумма всех файлов равна " + sizeDeterminant(sumOfFilesSize);
 		return collector(resultFileWithSize);
 	}
