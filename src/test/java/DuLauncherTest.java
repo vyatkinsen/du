@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -8,118 +9,163 @@ class DuLauncherTest {
 	String[] filesAndDirectories = {"files/ИсторияРоссии.rtf", "files/directory1/directory2", "files/car.jpeg", "files/directory1", "files/kitten.jpg" };
 
 	@Test
-	void testWithFiles(){
-		Du sumWithFiles1 = new Du(true, true, true, Arrays.asList(fileNames));
-		assertEquals("Сумма всех файлов равна 4.915 MB", sumWithFiles1.util());
+	void allTrueWithFilesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 4.915 MB", new Du(true, true, true, Arrays.asList(fileNames)).util());
+	}
 
-		Du sumWithFiles2 = new Du(true, true, false, Arrays.asList(fileNames));
-		assertEquals("Сумма всех файлов равна 4.687 MB", sumWithFiles2.util());
-
-		Du sumWithFiles3 = new Du(false, true, true, Arrays.asList(fileNames));
-		assertEquals("Сумма всех файлов равна 4914.664 KB", sumWithFiles3.util());
-
-		Du sumWithFiles4 = new Du(false, true, false, Arrays.asList(fileNames));
-		assertEquals("Сумма всех файлов равна 4799.477 KB", sumWithFiles4.util());
-
-		Du withFiles1 = new Du(true, false, true, Arrays.asList(fileNames));
-		assertEquals("""
-       
-       Размер files/ИсторияРоссии.rtf равен 804.981 KB
-       Размер files/kitten.jpg равен 46.962 KB
-       Размер files/Козодой.jpg равен 92.007 KB
-       Размер files/car.jpeg равен 3.971 MB
-       """, withFiles1.util());
-
-		Du withFiles2 = new Du(true, false, false, Arrays.asList(fileNames));
-		assertEquals("""
-       
-		Размер files/ИсторияРоссии.rtf равен 786.114 KB
-		Размер files/kitten.jpg равен 45.861 KB
-		Размер files/Козодой.jpg равен 89.851 KB
-		Размер files/car.jpeg равен 3.787 MB
-       """, withFiles2.util());
-
-		Du withFiles3 = new Du(false, false, true, Arrays.asList(fileNames));
-		assertEquals("""
-       
-       Размер files/ИсторияРоссии.rtf равен 804.981 KB
-       Размер files/kitten.jpg равен 46.962 KB
-       Размер files/Козодой.jpg равен 92.007 KB
-       Размер files/car.jpeg равен 3970.714 KB
-       """, withFiles3.util());
-
-		Du withFiles4 = new Du(false, false, false, Arrays.asList(fileNames));
+	@Test
+	void allFalseWithFiles() throws IOException {
 		assertEquals("""
        
 		Размер files/ИсторияРоссии.rtf равен 786.114 KB
 		Размер files/kitten.jpg равен 45.861 KB
 		Размер files/Козодой.jpg равен 89.851 KB
 		Размер files/car.jpeg равен 3877.650 KB
-       	""", withFiles4.util());
+       	""", new Du(false, false, false, Arrays.asList(fileNames)).util());
 	}
 
 	@Test
-	void testWithDirectory() {
-		Du sumWithDirectory1 = new Du(true, true, true, Arrays.asList(directoryNames));
-		assertEquals("Сумма всех файлов равна 19.538 MB", sumWithDirectory1.util());
+	void humanReadableSumOfFilesWithFilesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 4.687 MB", new Du(true, true, false, Arrays.asList(fileNames)).util());
+	}
 
-		Du sumWithDirectory2 = new Du(true, true, false, Arrays.asList(directoryNames));
-		assertEquals("Сумма всех файлов равна 18.633 MB", sumWithDirectory2.util());
+	@Test
+	void sumOfFilesSiWithFilesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 4914.664 KB", new Du(false, true, true, Arrays.asList(fileNames)).util());
+	}
 
-		Du sumWithDirectory3 = new Du(false, true, true, Arrays.asList(directoryNames));
-		assertEquals("Сумма всех файлов равна 19538.131 KB", sumWithDirectory3.util());
+	@Test
+	void sumOfFilesWithFilesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 4799.477 KB", new Du(false, true, false, Arrays.asList(fileNames)).util());
+	}
 
-		Du sumWithDirectory4 = new Du(false, true, false, Arrays.asList(directoryNames));
-		assertEquals("Сумма всех файлов равна 19080.206 KB", sumWithDirectory4.util());
-
-		Du withDirectory1 = new Du(true, false, true, Arrays.asList(directoryNames));
+	@Test
+	void humanReadableSiWithFilesTest() throws IOException {
 		assertEquals("""
        
-		Размер files равен 9.842 MB
-		Размер files/directory1 равен 4.921 MB
-		Размер files/directory1/directory2 равен 4.776 MB
-      	""", withDirectory1.util());
+       Размер files/ИсторияРоссии.rtf равен 804.981 KB
+       Размер files/kitten.jpg равен 46.962 KB
+       Размер files/Козодой.jpg равен 92.007 KB
+       Размер files/car.jpeg равен 3.971 MB
+       """, new Du(true, false, true, Arrays.asList(fileNames)).util());
+	}
 
-		Du withDirectory2 = new Du(true, false, false, Arrays.asList(directoryNames));
+	@Test
+	void humanReadableWithFilesTest() throws IOException {
 		assertEquals("""
        
-		Размер files равен 9.386 MB
-		Размер files/directory1 равен 4.693 MB
-		Размер files/directory1/directory2 равен 4.554 MB
-       	""", withDirectory2.util());
+		Размер files/ИсторияРоссии.rtf равен 786.114 KB
+		Размер files/kitten.jpg равен 45.861 KB
+		Размер files/Козодой.jpg равен 89.851 KB
+		Размер files/car.jpeg равен 3.787 MB
+       """, new Du(true, false, false, Arrays.asList(fileNames)).util());
+	}
 
-		Du withDirectory3 = new Du(false, false, true, Arrays.asList(directoryNames));
+	@Test
+	void siWithFilesTest() throws IOException {
 		assertEquals("""
        
-		Размер files равен 9841.624 KB
-		Размер files/directory1 равен 4920.812 KB
-		Размер files/directory1/directory2 равен 4775.695 KB
-       	""", withDirectory3.util());
+       Размер files/ИсторияРоссии.rtf равен 804.981 KB
+       Размер files/kitten.jpg равен 46.962 KB
+       Размер files/Козодой.jpg равен 92.007 KB
+       Размер files/car.jpeg равен 3970.714 KB
+       """, new Du(false, false, true, Arrays.asList(fileNames)).util());
+	}
 
-		Du withDirectory4 = new Du(false, false, false, Arrays.asList(directoryNames));
+	@Test
+	void allTrueWithDirectoriesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 19.538 MB", new Du(true, true, true, Arrays.asList(directoryNames)).util());
+	}
+
+	@Test
+	void allFalseWithDirectories() throws IOException {
 		assertEquals("""
        
 		Размер files равен 9610.961 KB
 		Размер files/directory1 равен 4805.480 KB
 		Размер files/directory1/directory2 равен 4663.765 KB
-       	""", withDirectory4.util());
+       	""", new Du(false, false, false, Arrays.asList(directoryNames)).util());
 	}
 
 	@Test
-	void testFilesWithDirectories() {
-		Du sumWithFilesAndDirectories1 = new Du(true, true, true, Arrays.asList(filesAndDirectories));
-		assertEquals("Сумма всех файлов равна 14.519 MB", sumWithFilesAndDirectories1.util());
+	void humanReadableSumOfFilesWithDirectoriesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 18.633 MB", new Du(true, true, false, Arrays.asList(directoryNames)).util());
+	}
 
-		Du sumWithFilesAndDirectories2 = new Du(true, true, false, Arrays.asList(filesAndDirectories));
-		assertEquals("Сумма всех файлов равна 13.847 MB", sumWithFilesAndDirectories2.util());
+	@Test
+	void sumOfFilesSiWithDirectoriesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 19538.131 KB", new Du(false, true, true, Arrays.asList(directoryNames)).util());
+	}
 
-		Du sumWithFilesAndDirectories3 = new Du(false, true, true, Arrays.asList(filesAndDirectories));
-		assertEquals("Сумма всех файлов равна 14519.164 KB", sumWithFilesAndDirectories3.util());
+	@Test
+	void sumOfFilesWithDirectoriesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 19080.206 KB", new Du(false, true, false, Arrays.asList(directoryNames)).util());
+	}
 
-		Du sumWithFilesAndDirectories4 = new Du(false, true, false, Arrays.asList(filesAndDirectories));
-		assertEquals("Сумма всех файлов равна 14178.871 KB", sumWithFilesAndDirectories4.util());
+	@Test
+	void humanReadableSiWithDirectoriesTest() throws IOException {
+		assertEquals("""
+       
+		Размер files равен 9.842 MB
+		Размер files/directory1 равен 4.921 MB
+		Размер files/directory1/directory2 равен 4.776 MB
+       	""", new Du(true, false, true, Arrays.asList(directoryNames)).util());
+	}
 
-		Du withFilesAndDirectories1 = new Du(true, false, true, Arrays.asList(filesAndDirectories));
+	@Test
+	void humanReadableWithDirectoriesTest() throws IOException {
+		assertEquals("""
+       
+		Размер files равен 9.386 MB
+		Размер files/directory1 равен 4.693 MB
+		Размер files/directory1/directory2 равен 4.554 MB
+       	""", new Du(true, false, false, Arrays.asList(directoryNames)).util());
+	}
+
+	@Test
+	void siWithDirectoriesTest() throws IOException {
+		assertEquals("""
+       
+		Размер files равен 9841.624 KB
+		Размер files/directory1 равен 4920.812 KB
+		Размер files/directory1/directory2 равен 4775.695 KB
+       	""", new Du(false, false, true, Arrays.asList(directoryNames)).util());
+	}
+
+	@Test
+	void allTrueWithFilesAndDirectoriesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 14.519 MB", new Du(true, true, true, Arrays.asList(filesAndDirectories)).util());
+	}
+
+	@Test
+	void allFalseWithFilesAndDirectories() throws IOException {
+		assertEquals("""
+       
+		Размер files/ИсторияРоссии.rtf равен 786.114 KB
+		Размер files/directory1/directory2 равен 4663.765 KB
+		Размер files/car.jpeg равен 3877.650 KB
+		Размер files/directory1 равен 4805.480 KB
+		Размер files/kitten.jpg равен 45.861 KB
+       	""", new Du(false, false, false, Arrays.asList(filesAndDirectories)).util());
+	}
+
+	@Test
+	void humanReadableSumOfFilesWithFilesAndDirectoriesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 13.847 MB", new Du(true, true, false, Arrays.asList(filesAndDirectories)).util());
+	}
+
+	@Test
+	void sumOfFilesSiWithFilesAndDirectoriesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 14519.164 KB", new Du(false, true, true, Arrays.asList(filesAndDirectories)).util());
+	}
+
+	@Test
+	void sumOfFilesWithFilesAndDirectoriesTest() throws IOException {
+		assertEquals("Сумма всех файлов равна 14178.871 KB", new Du(false, true, false, Arrays.asList(filesAndDirectories)).util());
+	}
+
+	@Test
+	void humanReadableSiWithFilesAndDirectoriesTest() throws IOException {
 		assertEquals("""
        
 		Размер files/ИсторияРоссии.rtf равен 804.981 KB
@@ -127,9 +173,11 @@ class DuLauncherTest {
 		Размер files/car.jpeg равен 3.971 MB
 		Размер files/directory1 равен 4.921 MB
 		Размер files/kitten.jpg равен 46.962 KB
-      	""", withFilesAndDirectories1.util());
+       	""", new Du(true, false, true, Arrays.asList(filesAndDirectories)).util());
+	}
 
-		Du withFilesAndDirectories2 = new Du(true, false, false, Arrays.asList(filesAndDirectories));
+	@Test
+	void humanReadableWithFilesAndDirectoriesTest() throws IOException {
 		assertEquals("""
        
 		Размер files/ИсторияРоссии.rtf равен 786.114 KB
@@ -137,9 +185,11 @@ class DuLauncherTest {
 		Размер files/car.jpeg равен 3.787 MB
 		Размер files/directory1 равен 4.693 MB
 		Размер files/kitten.jpg равен 45.861 KB
-       	""", withFilesAndDirectories2.util());
+       	""", new Du(true, false, false, Arrays.asList(filesAndDirectories)).util());
+	}
 
-		Du withFilesAndDirectories3 = new Du(false, false, true, Arrays.asList(filesAndDirectories));
+	@Test
+	void siWithFilesAndDirectoriesTest() throws IOException {
 		assertEquals("""
        
 		Размер files/ИсторияРоссии.rtf равен 804.981 KB
@@ -147,16 +197,6 @@ class DuLauncherTest {
 		Размер files/car.jpeg равен 3970.714 KB
 		Размер files/directory1 равен 4920.812 KB
 		Размер files/kitten.jpg равен 46.962 KB
-       	""", withFilesAndDirectories3.util());
-
-		Du withFilesAndDirectories4 = new Du(false, false, false, Arrays.asList(filesAndDirectories));
-		assertEquals("""
-       
-		Размер files/ИсторияРоссии.rtf равен 786.114 KB
-		Размер files/directory1/directory2 равен 4663.765 KB
-		Размер files/car.jpeg равен 3877.650 KB
-		Размер files/directory1 равен 4805.480 KB
-		Размер files/kitten.jpg равен 45.861 KB
-       	""", withFilesAndDirectories4.util());
+       	""", new Du(false, false, true, Arrays.asList(filesAndDirectories)).util());
 	}
 }

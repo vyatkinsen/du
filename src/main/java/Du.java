@@ -1,5 +1,8 @@
 import org.jetbrains.annotations.NotNull;
-import java.io.File;
+
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,31 +21,43 @@ public class Du {
 		this.fileName = fileName;
 	}
 
-	private long sizeForFolder(File directory) {
-		long lenOfFolder = 0;
-		for (File attachedSmth : directory.listFiles()) {
-			if (attachedSmth.isDirectory()) lenOfFolder += sizeForFolder(attachedSmth);
-			else lenOfFolder += attachedSmth.length();
+	static class personalFilevisitor extends SimpleFileVisitor<Path>{
+		public static long sumOfFiles;
+
+		@Override
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException{
+			sumOfFiles += Files.size(file);
+			return FileVisitResult.CONTINUE;
 		}
-		return lenOfFolder;
+
+		public static long getSum(){
+			long x = sumOfFiles;
+			sumOfFiles = 0;
+			return x;
+		}
 	}
 
-	public String util() {
+	public String util() throws IOException {
 		StringBuilder result = new StringBuilder();
 			for (String x : fileName){
 				long fileSize;
-				File input = new File(x);
+				Path path = Paths.get(x);
 
-				if (!(input.exists() || input.isDirectory())) {
+				if (!Files.exists(path)) {
 					System.err.println("Вы ввели имя несуществующего файла");
 					System.exit(1);
 				}
 
-				if (input.isFile()) fileSize = input.length();
-				else fileSize = sizeForFolder(input);
+				if (Files.isDirectory(path)) {
+					Files.walkFileTree(path, new personalFilevisitor());
+					fileSize = personalFilevisitor.getSum();
+				} else fileSize = Files.size(Path.of(x));
 
 				if (sumOfFilesFlag) sumOfFilesSize += fileSize;
-				else result.append("\n").append("Размер ").append(x).append(" равен ").append(sizeDeterminant(fileSize));
+				else {
+					String resultFileSize = sizeDeterminant(fileSize);
+					result.append("\n").append("Размер ").append(x).append(" равен ").append(resultFileSize);
+				}
 			}
 
 		if (sumOfFilesFlag) return "Сумма всех файлов равна " + sizeDeterminant(sumOfFilesSize);

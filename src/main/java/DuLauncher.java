@@ -1,4 +1,5 @@
 import org.kohsuke.args4j.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,9 @@ public class DuLauncher {
 	@Argument(required = true, metaVar = "fileName", usage = "File name")
 	private List<String> inputFileName = new ArrayList<>();
 
-	public static void main(String[] args) { new DuLauncher().launch(args); }
+	public static void main(String[] args) throws IOException { new DuLauncher().launch(args); }
 
-	private void launch(String[] args) {
+	private void launch(String[] args) throws IOException {
 		CmdLineParser parser = new CmdLineParser(this);
 		try {
 			parser.parseArgument(args);
